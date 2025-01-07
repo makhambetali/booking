@@ -23,9 +23,11 @@ class BookingAPIList(generics.ListCreateAPIView):
     def post(self, request):
         user_id = request.user.id
         seat_ids = request.data.get("seat_id")
-        duration = request.data.get("duration")
+        # duration = request.data.get("duration")
+        start_time = request.data.get("start_time")
+        end_time = request.data.get("end_time")
 
-        if not seat_ids or not duration:
+        if not seat_ids or not start_time or not end_time:
             return Response({"error": "Не переданы необходимые данные."}, status=status.HTTP_400_BAD_REQUEST)
 
         if isinstance(seat_ids, int):
@@ -35,7 +37,7 @@ class BookingAPIList(generics.ListCreateAPIView):
             with transaction.atomic():
                 success_ids = []
                 for seat_id in seat_ids:
-                    booking = BookingService.create_booking(user_id=user_id, seat_id=seat_id, duration=duration)
+                    booking = BookingService.create_booking(user_id=user_id, seat_id=seat_id, start_time = start_time, end_time = end_time)
                     success_ids.append(booking.id)
                 return Response({"message": "Бронирование успешно создано!", "booking_ids": success_ids}, status=status.HTTP_201_CREATED)
         except ValueError as e:
