@@ -30,10 +30,10 @@ class BookingService:
                 user_id=user_id,
                 duration=duration,
             )
-            try:
-                delete_record.apply_async((booking.id,), countdown=60 * duration)
-            except Exception as e:
-                raise ValueError(f"Ошибка при запуске задачи Celery: {e}")
+            # try:
+            #     delete_record.apply_async((booking.id,), countdown=60 * duration)
+            # except Exception as e:
+            #     raise ValueError(f"Ошибка при запуске задачи Celery: {e}")
 
             seat.reserve()
             # user.charge_account(cost)
