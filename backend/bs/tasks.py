@@ -5,7 +5,7 @@ from .models import Booking
 def delete_record(record_id):
     try:
         record = Booking.objects.get(id=record_id)
-        record.seat.release()
+        # record.seat.release()
         record.delete()
 
         print(f"Record with ID {record_id} deleted, seat {record.seat.name} is now available<3.")

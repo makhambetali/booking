@@ -5,7 +5,7 @@ from .qr_code_generator import generate_qr_code
 
 @admin.register(Seat)
 class SeatAdmin(admin.ModelAdmin):
-    list_display = ('name', 'is_available', 'is_vip', 'qr_code_preview')
+    list_display = ('name',  'is_vip', 'qr_code_preview')
     readonly_fields = ('qr_code_preview',)
 
     def qr_code_preview(self, obj):
