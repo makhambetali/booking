@@ -14,8 +14,8 @@ class Seat(models.Model):
 
     def validate_duration(self, duration):
         """Проверяет, является ли длительность допустимой."""
-        valid_durations = [choice[0] for choice in DURATION_CHOICES]
-        if duration not in valid_durations:
+
+        if not isinstance(duration, int):
             raise ValueError(f"Недопустимая длительность: {duration}.")
         
     def calculate_cost(self, duration):
@@ -48,7 +48,7 @@ class Booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     seat = models.ForeignKey(Seat, on_delete=models.CASCADE)
     booking_time = models.DateTimeField(auto_now_add=True)
-    duration = models.IntegerField(choices=DURATION_CHOICES)
+    duration = models.IntegerField(blank=False, null = False)
     confirmed = models.BooleanField(default=False)
     start_time = models.DateTimeField(blank=True, null=True)
 

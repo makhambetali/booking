@@ -8,8 +8,6 @@ class SeatSerializer(serializers.ModelSerializer):
 
 
 class BookingSerializer(serializers.ModelSerializer):
-    user = serializers.SlugRelatedField(slug_field = "username", read_only = True)
-    seat = serializers.SlugRelatedField(slug_field = "name", read_only = True)
     class Meta:
         model = Booking
         fields = '__all__'
