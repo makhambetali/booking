@@ -47,10 +47,10 @@ class BookingService:
                 user_id=user_id,
                 start_time=start_time,
                 end_time=end_time)
-            try:
-                delete_record.apply_async((booking.id,), countdown=60 * 2)
-            except Exception as e:
-                raise ValueError(f"Ошибка при запуске задачи Celery: {e}")
+            # try:
+            #     delete_record.apply_async((booking.id,), countdown=60 * 2)
+            # except Exception as e:
+            #     raise ValueError(f"Ошибка при запуске задачи Celery: {e}")
 
             return booking
 
