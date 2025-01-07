@@ -2,25 +2,27 @@ from django.db import models
 from datetime import timedelta
 
 from users.models import User
-DURATION_CHOICES = [
-        (3, "3 часа"),  # Храним длительность в минутах
-        (5, "5 часов"),
-    ]
+class SeatManager(models.Manager):
+    def get_by_name(self, name=None):
+        if name:
+            return self.filter(name=name)
+        return self.all()
+
+
 class Seat(models.Model):
     name = models.CharField(max_length=10, db_index=True)
     is_vip = models.BooleanField("VIP", default=False)
     qr_code = models.ImageField(upload_to="qr_codes/", blank=True, null=True)
-        
+
+    objects = SeatManager()
+
     def calculate_cost(self, duration):
-        """Вычисляет стоимость места в зависимости от длительности."""
         base_cost = 2800 if self.is_vip else 1800
         return int(base_cost * 1.5) if duration == 5 else base_cost
 
-
-
     def __str__(self):
         return self.name
-    
+
     
 
 class Booking(models.Model):
