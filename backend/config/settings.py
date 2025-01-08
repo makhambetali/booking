@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'djoser',
     'users',
     'bs',
+    'drf_yasg',
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -65,7 +66,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [FRONTEND_DIR / 'templates'],  # Добавлено
+        'DIRS': [],  # Добавлено
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

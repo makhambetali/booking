@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import mark_safe
 from .models import Seat, Booking
-from .qr_code_generator import generate_qr_code  
+from bs.utils.qr_code_generator import generate_qr_code  
 
 @admin.register(Seat)
 class SeatAdmin(admin.ModelAdmin):

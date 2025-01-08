@@ -1,22 +1,19 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 from bs.serializers import SeatSerializer, BookingSerializer
 from bs.services import BookingService
-from bs.models import Booking
+from bs.models import Booking, Seat
 from django.views.generic import TemplateView
 
 
-class SeatAPIList(generics.ListCreateAPIView):
+class SeatViewSet(viewsets.ModelViewSet):
     serializer_class = SeatSerializer
-
-    def get_queryset(self):
-        name = self.kwargs.get('name', None)
-        return BookingService.get_seats_by_name(name)
+    queryset = Seat.objects.all()
 
 
 class BookingAPIList(generics.ListCreateAPIView):
     serializer_class = BookingSerializer
-
+    queryset = Booking.objects.all()
     def post(self, request):
         try:
             data = request.data
@@ -33,7 +30,7 @@ class BookingAPIList(generics.ListCreateAPIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class BookingAPIDetail(generics.RetrieveUpdateDestroyAPIView):
+class BookingAPIDetail(generics.RetrieveDestroyAPIView):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
 

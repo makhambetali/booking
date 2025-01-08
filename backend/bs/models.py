@@ -1,20 +1,12 @@
 from django.db import models
-from datetime import timedelta
-
 from users.models import User
-class SeatManager(models.Manager):
-    def get_by_name(self, name=None):
-        if name:
-            return self.filter(name=name)
-        return self.all()
 
 
 class Seat(models.Model):
-    name = models.CharField(max_length=10, db_index=True)
+    name = models.CharField(max_length=10, db_index=True, unique=True)
     is_vip = models.BooleanField("VIP", default=False)
     qr_code = models.ImageField(upload_to="qr_codes/", blank=True, null=True)
 
-    objects = SeatManager()
 
     def calculate_cost(self, duration):
         base_cost = 2800 if self.is_vip else 1800
