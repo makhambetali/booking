@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import Seat
-from .qr_code_generator import generate_qr_code
+from bs.utils.qr_code_generator import generate_qr_code
 
 @receiver(post_save, sender=Seat)
 def generate_qr_code_on_create(sender, instance, created, **kwargs):
