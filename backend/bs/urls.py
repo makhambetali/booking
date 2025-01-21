@@ -1,10 +1,12 @@
-from django.urls import path
-from bs import views
+from django.urls import path, include
+from .views import *
+from rest_framework import routers
+
+
+router = routers.DefaultRouter()
+router.register(r'barbers', BarberViewSet, basename='seat')
+router.register(r'booking', BookingViewSet, basename='booking')
 
 urlpatterns = [
-    path('api/v1/seat/', views.SeatAPIList.as_view(), name='seat-list'),
-    path('api/v1/seat/<str:name>', views.SeatAPIList.as_view(), name='seat-detail'),
-    path('api/v1/booking/', views.BookingAPIList.as_view(), name='booking-list'),
-    path('api/v1/booking/<int:pk>/', views.BookingAPIDetail.as_view(), name='booking-detail'),
-    path('', views.HomePageView.as_view())
+    path('api/v1/', include(router.urls)),
 ]
