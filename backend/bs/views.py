@@ -1,47 +1,63 @@
-from rest_framework import generics, status, viewsets, mixins
+from rest_framework import generics, mixins, viewsets, status
 from rest_framework.response import Response
-from rest_framework.decorators import action
-from bs.serializers import SeatSerializer, BookingSerializer
-from bs.services import BookingService
-from bs.models import Booking, Seat
 
+from .models import *
+from .serializers import BarberSerializer, BookingSerializer
+from .services import BookingService
 
-class SeatViewSet(viewsets.ModelViewSet):
-    serializer_class = SeatSerializer
-    queryset = Seat.objects.all()
+class BarberViewSet(viewsets.ModelViewSet):
+    queryset = Barber.objects.all()
+    serializer_class = BarberSerializer
 
-class BookingViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
-    """
-    ViewSet для работы с бронированиями.
-    """
-    queryset = Booking.objects.all()
+class BookingViewSet(viewsets.ModelViewSet):
+    queryset = BarberBooking.objects.all()
     serializer_class = BookingSerializer
 
     def create(self, request, *args, **kwargs):
-        """
-        Обработка POST-запроса для создания бронирования.
-        """
-        try:
-            data = request.data
-            user_id = request.user.id
-            booking_ids = BookingService.create_multiple_bookings(
-                user_id=user_id,
-                seat_ids=data.get("seat_id"),
-                start_time=data.get("start_time"),
-                end_time=data.get("end_time"),
-            )
-            return Response({"message": "Бронирование успешно создано!", "booking_ids": booking_ids},
-                            status=status.HTTP_201_CREATED)
-        except ValueError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
-    @action(detail=False, methods=["get"])
-    def my_bookings(self, request):
-        """
-        Пользователь может получить список своих бронирований.
-        """
-        user_id = request.user.id
-        bookings = self.queryset.filter(user_id=user_id)
-        serializer = self.get_serializer(bookings, many=True)
-        return Response(serializer.data)
+        barber_id = request.data.get('barber_id')
+        time_id = request.data.get('time_id')
+        name = request.data.get('name')
+        phone_number = request.data.get('phone_number')
+        comment = request.data.get('comment', '')
 
+        missing_fields = []
+        if not barber_id:
+            missing_fields.append("barber_id")
+        if not time_id:
+            missing_fields.append("time_id")
+        if not name:
+            missing_fields.append("name")
+        if not phone_number:
+            missing_fields.append("phone_number")
+
+        if missing_fields:
+            return Response(
+                {"error": f"The following fields are required: {', '.join(missing_fields)}."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            booking = BookingService.create_booking(
+                barber_id=barber_id,
+                time_id=time_id,
+                name=name,
+                phone_number=phone_number,
+                comment=comment
+            )
+        except ValueError as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        serializer = self.get_serializer(booking)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def destroy(self, request, *args, **kwargs):
+        booking_id = kwargs.get('pk')
+
+        try:
+            result = BookingService.delete_booking(booking_id=booking_id)
+            return Response(result, status=status.HTTP_200_OK)
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)

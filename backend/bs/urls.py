@@ -1,11 +1,11 @@
 from django.urls import path, include
-from bs import views
+from .views import *
 from rest_framework import routers
 
 
 router = routers.DefaultRouter()
-router.register(r'seat', views.SeatViewSet, basename='seat')
-router.register(r'booking', views.BookingViewSet, basename='booking')
+router.register(r'barbers', BarberViewSet, basename='seat')
+router.register(r'booking', BookingViewSet, basename='booking')
 
 urlpatterns = [
     path('api/v1/', include(router.urls)),
