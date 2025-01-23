@@ -1,6 +1,6 @@
 from rest_framework import generics, mixins, viewsets, status
 from rest_framework.response import Response
-
+from rest_framework.decorators import action
 from .models import *
 from .serializers import BarberSerializer, BookingSerializer
 from .services import BookingService
@@ -8,6 +8,16 @@ from .services import BookingService
 class BarberViewSet(viewsets.ModelViewSet):
     queryset = Barber.objects.all()
     serializer_class = BarberSerializer
+
+    @action(methods=['get'], detail=True)
+    def schedules(self, request, pk=None):
+        slots = BarberTime.objects.filter(barber_id=pk)
+        return Response({
+            'schedules': [
+                {'id': slot.time_slots.id, 'time': slot.time_slots.start_time} 
+                for slot in slots
+            ]
+        })
 
 class BookingViewSet(viewsets.ModelViewSet):
     queryset = BarberBooking.objects.all()
