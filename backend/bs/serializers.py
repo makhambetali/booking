@@ -14,11 +14,11 @@ class BarberTimeSerializer(serializers.ModelSerializer):
 
 
 class BarberSerializer(serializers.ModelSerializer):
-    schedules = BarberTimeSerializer(many=True)
+    # schedules = BarberTimeSerializer(many=True)
 
     class Meta:
         model = Barber
-        fields = ['id', 'name', 'schedules']
+        fields = '__all__'
 
 
 
