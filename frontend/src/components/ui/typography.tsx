@@ -26,3 +26,14 @@ export const H4: React.FC<React.HTMLAttributes<HTMLHeadingElement>> = ({ childre
         </h4>
     );
 };
+
+export const H5: React.FC<React.HTMLAttributes<HTMLHeadingElement>> = ({ children, className, ...props }) => {
+    return (
+        <h5
+            className={`scroll-m-20 text-sm sm:text-base/none leading-none font-semibold  tracking-tight ${className}`}
+            {...props}
+        >
+            {children}
+        </h5>
+    );
+};
