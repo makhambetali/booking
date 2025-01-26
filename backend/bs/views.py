@@ -14,7 +14,7 @@ class BarberViewSet(viewsets.ModelViewSet):
         slots = BarberTime.objects.filter(barber_id=pk)
         return Response({
             'schedules': [
-                {'id': slot.time_slots.id, 'time': slot.time_slots.start_time} 
+                {'id': slot.time_slots.id, 'time': slot.time_slots.start_time, 'is_available': slot.is_available} 
                 for slot in slots
             ]
         })
