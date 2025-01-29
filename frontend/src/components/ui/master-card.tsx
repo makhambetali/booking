@@ -1,16 +1,21 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { H5 } from './typography';
-import { SetStringStateType } from '@/lib/type/types';
+import { SetNumberStateType } from '@/lib/type/types';
 
 interface IProps {
     name: string;
-    id: string;
-    setMasterId: SetStringStateType;
-}  
+    id: number;
+    setMasterId: SetNumberStateType;
+}
 
 export default function MasterCard({ name, id, setMasterId }: IProps) {
     return (
-        <div className="flex items-start justify-between rounded-lg border p-2 sm:p-4 text-left text-sm transition-all hover:bg-accent bg-muted hover:bg-gray-50 cursor-pointer" onClick={() => setMasterId(id)}>
+        <div
+            className="flex items-start justify-between rounded-lg border p-2 sm:p-4 text-left text-sm transition-all hover:bg-accent bg-muted hover:bg-gray-50 cursor-pointer"
+            onClick={() => {
+                setMasterId(id);
+            }}
+        >
             <div className="flex gap-3 items-start">
                 <Avatar>
                     <AvatarImage

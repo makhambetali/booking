@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { QueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { IPostBooking } from './type/types';
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -21,9 +22,16 @@ export async function getMasters() {
     return data;
 }
 
-export async function getScheduleByMaster(masterId: string) {
-    console.log(masterId);
-    const { data } = await axiosApiClient.get(`barbers/${masterId}/schedules`);
-    console.log(data);
+export async function getScheduleByMaster(masterId: number) {
+    const { data } = await axiosApiClient.get(`barbers/${masterId}/schedules/`);
     return data;
+}
+
+export async function postBooking(bookingData: IPostBooking) {
+    try {
+        const { data } = await axiosApiClient.post(`booking/`, bookingData);
+        return data;
+    } catch (error) {
+        throw error; // Ensure error is properly handled
+    }
 }

@@ -1,4 +1,3 @@
-import BookingForm from '@/components/ui/booking-form';
 import SlotsList from '@/components/ui/slots-list';
 
 export default function Home() {

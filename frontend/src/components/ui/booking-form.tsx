@@ -1,10 +1,9 @@
 'use client';
 
-import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { phoneRegex } from '@/lib/utils';
+import { phoneRegex, postBooking } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { PhoneInput } from '@/components/ui/phone-input';
@@ -12,41 +11,78 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { H3 } from './typography';
 import { RequiredStar } from './required-star';
+import { useMutation } from '@tanstack/react-query';
+import { IPostBooking } from '@/lib/type/types';
+import { ToastAction } from '@radix-ui/react-toast';
+import { useToast } from '@/hooks/use-toast';
+import axios from 'axios';
+
+interface IProps {
+    barber_id: number;
+    time_id: number;
+}
+
+interface IBookingFormValues {
+    name: string;
+    phone_number: string;
+    comment?: string;
+}
 
 const formSchema = z.object({
-    name: z.string().min(1, 'Имя является обязательный полем.'),
-    phone: z.string().regex(phoneRegex, 'Неверный формат телефона.'),
+    name: z.string().min(1, 'Имя является обязательным полем.'),
+    phone_number: z.string().regex(phoneRegex, 'Неверный формат телефона.'),
     comment: z.string().optional(),
 });
 
-export default function BookingForm() {
-    const form = useForm<z.infer<typeof formSchema>>({
+export default function BookingForm({ barber_id, time_id }: IProps) {
+    const form = useForm<IBookingFormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: { phone: '+7', name: '', comment: '' },
+        defaultValues: { phone_number: '+7', name: '', comment: '' },
     });
 
+    const mutation = useMutation({
+        mutationFn: (data: IPostBooking) => {
+            return postBooking(data);
+        },
+        onSuccess: (data) => {
+            toast({
+                variant: 'success',
+                title: 'Запись прошла успешно.',
+                description: 'Запись к мастеру ${barber_id} на ${time_id} прошла успешно.',
+            });
+        },
+        onError: (error) => {
+            if (axios.isAxiosError(error)) {
+                toast({
+                    variant: 'destructive',
+                    title: 'Ошибка.',
+                    description: error.response?.data.error,
+                    duration: 2000,
+                });
+            } else {
+                toast({
+                    variant: 'destructive',
+                    title: 'Ошибка.',
+                    description: 'Что-то пошло не так.',
+                    duration: 2000,
+                });
+            }
+        },
+    });
+
+    const { toast } = useToast();
+
     function onSubmit(values: z.infer<typeof formSchema>) {
-        try {
-            console.log(values);
-            toast(
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-                </pre>
-            );
-        } catch (error) {
-            console.error('Form submission error', error);
-            toast.error('Не удалось отправить форму. Пожалуйста, попробуйте еще раз.');
-        }
+        mutation.mutate({ ...values, barber_id, time_id });
     }
 
     return (
-        <div className=" mx-auto w-full max-w-3xl px-6 sm:px-20 md:px-24 lg:px-12">
-            <H3 className="mb-8">Контактные данные</H3>
+        <div className="mx-auto w-full max-w-3xl p-0 sm:p-6">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
                     <FormField
                         control={form.control}
-                        name="phone"
+                        name="phone_number"
                         render={({ field }) => (
                             <FormItem className="flex flex-col items-start">
                                 <FormLabel>
@@ -55,7 +91,6 @@ export default function BookingForm() {
                                 <FormControl className="w-full">
                                     <PhoneInput placeholder="Введите номер телефона." {...field} defaultCountry="KZ" />
                                 </FormControl>
-                                <FormDescription>Введите ваш номер телефона.</FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}

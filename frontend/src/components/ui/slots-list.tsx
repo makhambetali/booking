@@ -1,22 +1,21 @@
 'use client';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { H2, H4 } from './typography';
 import { RadioGroup, RadioGroupItem } from '@radix-ui/react-radio-group';
 import { Label } from '@radix-ui/react-label';
 import { useQuery } from '@tanstack/react-query';
 import { getMasters, getScheduleByMaster } from '@/lib/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Dialog,
     DialogContent,
     DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from './button';
 import SelectList from './select-list';
+import BookingForm from './booking-form';
 
 interface ISlot {
     start: string;
@@ -24,43 +23,26 @@ interface ISlot {
 }
 
 export default function SlotsList() {
-    const slots: ISlot[] = [
-        { start: '0700', duration: 30 },
-        { start: '0730', duration: 30 },
-        { start: '0800', duration: 30 },
-        { start: '0830', duration: 30 },
-        { start: '0900', duration: 30 },
-        { start: '0930', duration: 30 },
-        { start: '1000', duration: 30 },
-        { start: '1030', duration: 30 },
-        { start: '1100', duration: 30 },
-        { start: '1130', duration: 30 },
-        { start: '1200', duration: 30 },
-        { start: '1230', duration: 30 },
-        { start: '1300', duration: 30 },
-        { start: '1330', duration: 30 },
-        { start: '1400', duration: 30 },
-        { start: '1430', duration: 30 },
-        { start: '1800', duration: 30 },
-        { start: '1830', duration: 30 },
-        { start: '1900', duration: 30 },
-        { start: '1930', duration: 30 },
-        { start: '2000', duration: 30 },
-    ];
-
-    // const queryClient = useQueryClient();
-
-    const [selectedMaster, setSelectedMaster] = useState<string>(''); //Id of selected master
+    const [selectedMaster, setSelectedMaster] = useState<number | null>(null); //Id of selected master
+    const [selectedSlot, setSelectedSlot] = useState<number | null>(null); //Id of selected slot
 
     const barbersQuery = useQuery({ queryKey: ['barbers'], queryFn: getMasters });
     const scheduleQuery = useQuery({
         queryKey: ['schedule', selectedMaster],
-        queryFn: () => getScheduleByMaster(selectedMaster),
+        queryFn: () => {
+            if (!selectedMaster) return { schedules: [] };
+            return getScheduleByMaster(selectedMaster);
+        },
         enabled: !!selectedMaster,
     });
 
     const isLoading = barbersQuery.isLoading || scheduleQuery.isLoading;
     const isError = barbersQuery.isError || scheduleQuery.isError;
+
+    useEffect(() => {
+        console.log(selectedMaster);
+        console.log(scheduleQuery.data?.schedules);
+    }, [selectedMaster, scheduleQuery.data?.schedules]);
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -70,14 +52,10 @@ export default function SlotsList() {
         return <div>Error</div>;
     }
 
-    console.log(scheduleQuery.data?.schedules);
-
-    const scheduleSlots = scheduleQuery.data?.schedules;
-
     return (
         <RadioGroup
-            defaultValue={slots[0].start}
-            className="space-y-6 mx-auto w-full max-w-3xl px-4 sm:px-20 md:px-24 lg:px-12"
+            className="space-y-6 mx-auto p-4 sm:p-9 w-full max-w-3xl px-4 sm:px-20 md:px-24 lg:px-12 bg-white h-full"
+            onValueChange={(value) => setSelectedSlot(parseInt(value, 10))}
         >
             <H2>Новая запись</H2>
             <div>
@@ -96,13 +74,14 @@ export default function SlotsList() {
                 </Dialog>
             </div>
 
-            {scheduleSlots ? (
+            {scheduleQuery.data?.schedules.length > 0 ? (
                 <div className="flex flex-col gap-3">
                     <div>
                         <H4 className="mb-3">Утро</H4>
                         <div className="flex flex-wrap gap-2 w-full">
-                            {scheduleSlots?.map((slot) => {
+                            {scheduleQuery.data?.schedules?.map((slot) => {
                                 return (
+                                    slot.is_available &&
                                     slot.time < '1200' && (
                                         <div
                                             key={slot.id}
@@ -127,8 +106,9 @@ export default function SlotsList() {
                     <div>
                         <H4 className="mb-3">День</H4>
                         <div className="flex flex-wrap gap-2 w-full">
-                            {scheduleSlots?.map((slot) => {
+                            {scheduleQuery.data?.schedules?.map((slot) => {
                                 return (
+                                    slot.is_available &&
                                     slot.time > '1200' &&
                                     slot.time < '1800' && (
                                         <div
@@ -154,8 +134,9 @@ export default function SlotsList() {
                     <div>
                         <H4 className="mb-3">Вечер</H4>
                         <div className="flex flex-wrap gap-2 w-full">
-                            {scheduleSlots?.map((slot) => {
+                            {scheduleQuery.data?.schedules?.map((slot) => {
                                 return (
+                                    slot.is_available &&
                                     slot.time > '1800' && (
                                         <div
                                             key={slot.id}
@@ -166,8 +147,7 @@ export default function SlotsList() {
                                             <RadioGroupItem id={slot.id} value={slot.id} className="peer hidden" />
                                             <Label
                                                 htmlFor={slot.id}
-                                                className="flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 peer-aria-checked:bg-blue-500 peer-aria-checked:text-white
-                             "
+                                                className="flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 peer-aria-checked:bg-blue-500 peer-aria-checked:text-white"
                                             >
                                                 {slot.time}
                                             </Label>
@@ -177,6 +157,24 @@ export default function SlotsList() {
                             })}
                         </div>
                     </div>
+
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="default" disabled={!selectedSlot || !selectedMaster}>
+                                Записаться
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[600px]">
+                            <DialogHeader>
+                                <DialogTitle>Контактные данные</DialogTitle>
+                                <DialogDescription></DialogDescription>
+                            </DialogHeader>
+
+                            {selectedMaster !== null && selectedSlot !== null && (
+                                <BookingForm barber_id={selectedMaster} time_id={selectedSlot} />
+                            )}
+                        </DialogContent>
+                    </Dialog>
                 </div>
             ) : (
                 <div>
