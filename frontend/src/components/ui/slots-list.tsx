@@ -39,11 +39,6 @@ export default function SlotsList() {
     const isLoading = barbersQuery.isLoading || scheduleQuery.isLoading;
     const isError = barbersQuery.isError || scheduleQuery.isError;
 
-    useEffect(() => {
-        console.log(selectedMaster);
-        console.log(scheduleQuery.data?.schedules);
-    }, [selectedMaster, scheduleQuery.data?.schedules]);
-
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -52,12 +47,15 @@ export default function SlotsList() {
         return <div>Error</div>;
     }
 
+    console.log(scheduleQuery.data);
+
     return (
         <RadioGroup
             className="space-y-6 mx-auto p-4 sm:p-9 w-full max-w-3xl px-4 sm:px-20 md:px-24 lg:px-12 bg-white h-full"
             onValueChange={(value) => setSelectedSlot(parseInt(value, 10))}
         >
             <H2>Новая запись</H2>
+
             <div>
                 <Dialog>
                     <DialogTrigger asChild>
@@ -69,7 +67,11 @@ export default function SlotsList() {
                             <DialogDescription></DialogDescription>
                         </DialogHeader>
 
-                        <SelectList masters={barbersQuery.data} setMasterId={setSelectedMaster} />
+                        <SelectList
+                            masters={barbersQuery.data}
+                            setMasterId={setSelectedMaster}
+                            selectedMaster={selectedMaster}
+                        />
                     </DialogContent>
                 </Dialog>
             </div>
@@ -77,8 +79,8 @@ export default function SlotsList() {
             {scheduleQuery.data?.schedules.length > 0 ? (
                 <div className="flex flex-col gap-3">
                     <div>
-                        <H4 className="mb-3">Утро</H4>
                         <div className="flex flex-wrap gap-2 w-full">
+                            <H4 className="mb-3">Утро</H4>
                             {scheduleQuery.data?.schedules?.map((slot) => {
                                 return (
                                     slot.is_available &&
@@ -175,6 +177,10 @@ export default function SlotsList() {
                             )}
                         </DialogContent>
                     </Dialog>
+                </div>
+            ) : selectedMaster ? (
+                <div>
+                    <p>`Нет доступных записей у мастера выбранного мастера.`</p>
                 </div>
             ) : (
                 <div>

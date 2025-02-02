@@ -37,7 +37,7 @@ const formSchema = z.object({
 export default function BookingForm({ barber_id, time_id }: IProps) {
     const form = useForm<IBookingFormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: { phone_number: '+7', name: '', comment: '' },
+        defaultValues: { phone_number: '', name: '', comment: '' },
     });
 
     const mutation = useMutation({
