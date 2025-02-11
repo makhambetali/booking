@@ -1,6 +1,4 @@
-import BookingForm from '@/components/ui/booking-form';
 import ServiceSelectPage from '@/components/ui/service-select';
-import SlotsList from '@/components/ui/slots-list';
 
 export default function Home() {
     return (
