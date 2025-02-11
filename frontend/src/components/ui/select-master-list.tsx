@@ -7,7 +7,7 @@ interface IProps {
     setMasterId: SetNumberStateType;
 }
 
-export default function SelectList({ masters, setMasterId, selectedMaster }: IProps) {
+export default function SelectMasterList({ masters, setMasterId, selectedMaster }: IProps) {
     return (
         <div className="flex flex-col gap-3 sm:gap-3">
             {masters.map((master: IMaster) => (

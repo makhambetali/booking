@@ -14,7 +14,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from './button';
-import SelectList from './select-list';
+import SelectMasterList from './select-master-list';
 import BookingForm from './booking-form';
 
 interface ISlot {
@@ -22,7 +22,7 @@ interface ISlot {
     duration: number;
 }
 
-export default function SlotsList() {
+export default function SlotsListPage() {
     const [selectedMaster, setSelectedMaster] = useState<number | null>(null); //Id of selected master
     const [selectedSlot, setSelectedSlot] = useState<number | null>(null); //Id of selected slot
 
@@ -67,7 +67,7 @@ export default function SlotsList() {
                             <DialogDescription></DialogDescription>
                         </DialogHeader>
 
-                        <SelectList
+                        <SelectMasterList
                             masters={barbersQuery.data}
                             setMasterId={setSelectedMaster}
                             selectedMaster={selectedMaster}
