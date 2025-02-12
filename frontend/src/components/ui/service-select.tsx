@@ -44,8 +44,12 @@ export default function ServiceSelectPage() {
         const filteredItems = mockServices.filter((service) =>
             service.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
-
-        setFilteredServices(filteredItems);
+        console.log(filteredItems);
+        if (filteredItems.length > 0) {
+            setFilteredServices(filteredItems);
+        } else {
+            setFilteredServices(mockServices);
+        }
     };
 
     return (
