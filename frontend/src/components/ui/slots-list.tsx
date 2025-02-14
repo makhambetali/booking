@@ -180,7 +180,7 @@ export default function SlotsListPage() {
                 </div>
             ) : selectedMaster ? (
                 <div>
-                    <p>`Нет доступных записей у мастера выбранного мастера.`</p>
+                    <p>Нет доступных записей у мастера выбранного мастера.</p>
                 </div>
             ) : (
                 <div>

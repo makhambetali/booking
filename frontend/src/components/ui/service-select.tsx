@@ -64,7 +64,7 @@ export default function ServiceSelectPage() {
                 <H3>Стрижка головы</H3>
                 {filteredServices.map((service, index) => (
                     <ServiceCard
-                        id={service.id}
+                        serviceId={service.id}
                         name={service.name}
                         description={service.description}
                         price={service.price}

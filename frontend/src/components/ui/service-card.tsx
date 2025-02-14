@@ -4,20 +4,20 @@ import { useRouter } from 'next/navigation';
 import { H5 } from './typography';
 
 interface IProps {
-    id: number;
+    serviceId: number;
     name: string;
     description: string;
     duration: number;
     price: number;
 }
 
-export default function ServiceCard({ id, name, description, duration, price }: IProps) {
+export default function ServiceCard({ serviceId, name, description, duration, price }: IProps) {
     const router = useRouter();
 
     return (
         <div
             className="flex flex-col gap-2 items-start justify-between rounded-lg bordersm:p-4 text-left text-sm transition-all hover:bg-gray-100 bg-muted outline-none outline-offset-0  hover:outline-gray-100 hover:outline-[6px] cursor-pointer  overflow-hidden"
-            onClick={() => router.push(`/master-time-select/${id}`)}
+            onClick={() => router.push(`/master-time-select/${serviceId}`)}
         >
             <div className="w-full">
                 <img
