@@ -4,7 +4,7 @@ import { RadioGroup, RadioGroupItem } from '@radix-ui/react-radio-group';
 import { Label } from '@radix-ui/react-label';
 import { useQuery } from '@tanstack/react-query';
 import { getMasters, getScheduleByMaster } from '@/lib/utils';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -16,29 +16,27 @@ import {
 import { Button } from './button';
 import SelectMasterList from './select-master-list';
 import BookingForm from './booking-form';
+import { IMaster, ISlot } from '@/lib/type/types';
 
-interface ISlot {
-    start: string;
-    duration: number;
+interface IProps {
+    barbers: IMaster;
+    schedules: ISlot[];
+    selectedMaster: number;
+    selectedSlot: number;
+    isLoading: boolean;
+    isError: boolean;
 }
 
-export default function SlotsListPage() {
-    const [selectedMaster, setSelectedMaster] = useState<number | null>(null); //Id of selected master
-    const [selectedSlot, setSelectedSlot] = useState<number | null>(null); //Id of selected slot
-
-    const barbersQuery = useQuery({ queryKey: ['barbers'], queryFn: getMasters });
-    const scheduleQuery = useQuery({
-        queryKey: ['schedule', selectedMaster],
-        queryFn: () => {
-            if (!selectedMaster) return { schedules: [] };
-            return getScheduleByMaster(selectedMaster);
-        },
-        enabled: !!selectedMaster,
-    });
-
-    const isLoading = barbersQuery.isLoading || scheduleQuery.isLoading;
-    const isError = barbersQuery.isError || scheduleQuery.isError;
-
+export default function SlotsListPage({
+    barbers,
+    schedules,
+    selectedMaster,
+    setSelectedMaster,
+    selectedSlot,
+    setSelectedSlot,
+    isLoading,
+    isError,
+}: IProps) {
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -46,8 +44,6 @@ export default function SlotsListPage() {
     if (isError) {
         return <div>Error</div>;
     }
-
-    console.log(scheduleQuery.data);
 
     return (
         <RadioGroup
@@ -68,7 +64,7 @@ export default function SlotsListPage() {
                         </DialogHeader>
 
                         <SelectMasterList
-                            masters={barbersQuery.data}
+                            masters={barbers}
                             setMasterId={setSelectedMaster}
                             selectedMaster={selectedMaster}
                         />
@@ -76,12 +72,12 @@ export default function SlotsListPage() {
                 </Dialog>
             </div>
 
-            {scheduleQuery.data?.schedules.length > 0 ? (
+            {schedules?.length > 0 ? (
                 <div className="flex flex-col gap-3">
                     <div>
                         <div className="flex flex-wrap gap-2 w-full">
                             <H4 className="mb-3">Утро</H4>
-                            {scheduleQuery.data?.schedules?.map((slot) => {
+                            {schedules?.map((slot) => {
                                 return (
                                     slot.is_available &&
                                     slot.time < '1200' && (
@@ -108,7 +104,7 @@ export default function SlotsListPage() {
                     <div>
                         <H4 className="mb-3">День</H4>
                         <div className="flex flex-wrap gap-2 w-full">
-                            {scheduleQuery.data?.schedules?.map((slot) => {
+                            {schedules?.map((slot) => {
                                 return (
                                     slot.is_available &&
                                     slot.time > '1200' &&
@@ -136,7 +132,7 @@ export default function SlotsListPage() {
                     <div>
                         <H4 className="mb-3">Вечер</H4>
                         <div className="flex flex-wrap gap-2 w-full">
-                            {scheduleQuery.data?.schedules?.map((slot) => {
+                            {schedules?.map((slot) => {
                                 return (
                                     slot.is_available &&
                                     slot.time > '1800' && (
