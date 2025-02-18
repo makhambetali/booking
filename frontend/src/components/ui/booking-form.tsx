@@ -19,6 +19,7 @@ import axios from 'axios';
 
 interface IProps {
     barber_id: number;
+    service_id: number;
     time_id: number;
 }
 

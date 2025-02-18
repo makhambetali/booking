@@ -22,3 +22,7 @@ export function useBooking() {
         scheduleQuery,
     };
 }
+
+export function useSelectMaster() {
+    
+}

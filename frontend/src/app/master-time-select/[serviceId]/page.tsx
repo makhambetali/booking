@@ -1,25 +1,50 @@
 'use client';
-import SlotsList from '@/components/ui/slots-list';
+import BookingFormDialog from '@/components/feature/booking-form-dialog';
+import SelectMasterDialog from '@/components/feature/select-master-dialog';
+import SlotsList from '@/components/feature/slots-list';
+import { H2 } from '@/components/ui/typography';
 import { useBooking } from '@/hooks/use-booking';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function MasterTimeSelectPage() {
-    const params = useParams();
+    const { serviceId } = useParams();
+    const serviceIdNumber = serviceId ? parseInt(serviceId as string, 10) : null;
+    const router = useRouter();
+
     const { selectedMaster, selectedSlot, barbersQuery, scheduleQuery, setSelectedMaster, setSelectedSlot } =
         useBooking();
-    console.log(params);
+
+    useEffect(() => {
+        //Invalid serviceId 
+        if (!serviceIdNumber) {
+            router.push('/');
+        }
+    }, [serviceIdNumber, router]);
 
     return (
-        <div className="w-full max-w-full bg-zinc-100 ">
-            <SlotsList
+        <div className="space-y-6 mx-auto p-4 sm:p-9 w-full max-w-3xl px-4 sm:px-20 md:px-24 lg:px-12 bg-white h-full min-h-screen">
+            <H2>Новая запись</H2>
+
+            <SelectMasterDialog
                 barbers={barbersQuery.data}
-                schedules={scheduleQuery.data?.schedules}
                 selectedMaster={selectedMaster}
                 setSelectedMaster={setSelectedMaster}
+            />
+
+            <SlotsList
+                schedules={scheduleQuery.data?.schedules}
+                selectedMaster={selectedMaster}
                 selectedSlot={selectedSlot}
                 setSelectedSlot={setSelectedSlot}
                 isLoading={barbersQuery.isLoading || scheduleQuery.isLoading}
                 isError={barbersQuery.isError || scheduleQuery.isError}
+            />
+
+            <BookingFormDialog
+                selectedMaster={selectedMaster}
+                selectedService={serviceIdNumber}
+                selectedSlot={selectedSlot}
             />
         </div>
     );

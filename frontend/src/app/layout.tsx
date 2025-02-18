@@ -24,7 +24,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <QueryClientProvider client={queryClient}>
-                <body className={`${geistSans.variable} ${geistMono.variable}`}>
+                <body className={`${geistSans.variable} ${geistMono.variable} w-full max-w-full bg-zinc-100 `}>
                     <Toaster />
                     {children}
                 </body>
