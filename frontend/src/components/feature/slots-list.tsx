@@ -4,6 +4,7 @@ import { RadioGroup, RadioGroupItem } from '@radix-ui/react-radio-group';
 import { Label } from '@radix-ui/react-label';
 import { ISlot, SetNumberStateType } from '@/lib/type/types';
 import { Skeleton } from '../ui/skeleton';
+import SkeletonLoader from '../ui/skeleton-loader';
 
 interface IProps {
     schedules: ISlot[];
@@ -28,33 +29,31 @@ export default function SlotsListPage({ schedules, selectedMaster, setSelectedSl
         <div>
             <H4 className="mb-3">{title}</H4>
             <div className="flex flex-wrap gap-2 w-full">
-                {isLoading ? (
-                    <div>LAODING LOADING</div>
-                ) : (
-                    slots.map((slot) => (
-                        <div
-                            key={slot.id}
-                            className="flex-grow-0 flex-shrink-0 w-[calc(25%_-_0.5rem)] 
+                {slots.map((slot) => (
+                    <div
+                        key={slot.id}
+                        className="flex-grow-0 flex-shrink-0 w-[calc(25%_-_0.5rem)] 
                                 sm:w-[calc(20%_-_0.5rem)]
                                 md:w-[calc(12.5%_-_0.5rem)]"
+                    >
+                        <RadioGroupItem id={slot.id} value={slot.id} className="peer hidden" />
+                        <Label
+                            htmlFor={slot.id}
+                            className="flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 peer-aria-checked:bg-blue-500 peer-aria-checked:text-white"
                         >
-                            <RadioGroupItem id={slot.id} value={slot.id} className="peer hidden" />
-                            <Label
-                                htmlFor={slot.id}
-                                className="flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 peer-aria-checked:bg-blue-500 peer-aria-checked:text-white"
-                            >
-                                {slot.time}
-                            </Label>
-                        </div>
-                    ))
-                )}
+                            {slot.time}
+                        </Label>
+                    </div>
+                ))}
             </div>
         </div>
     );
 
     return (
         <RadioGroup className="" onValueChange={(value) => setSelectedSlot(parseInt(value, 10))}>
-            {schedules?.length > 0 ? (
+            {isLoading ? (
+                <SkeletonLoader className="h-6 w-40" />
+            ) : schedules?.length > 0 ? (
                 <div className="flex flex-col gap-3">
                     {morningSlots.length > 0 && renderSlots(morningSlots, 'Утро')}
                     {daySlots.length > 0 && renderSlots(daySlots, 'День')}

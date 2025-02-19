@@ -15,6 +15,15 @@ module.exports = {
                 sm: 'calc(var(--radius) - 4px)',
             },
             colors: {},
+            keyframes: {
+                pulseWidth: {
+                    '0%, 100%': { width: '50%' },
+                    '50%': { width: '100%' },
+                },
+            },
+            animation: {
+                'pulse-width': 'pulseWidth 2s ease-in-out infinite',
+            },
         },
     },
     plugins: [require('tailwindcss-animate')],

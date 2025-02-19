@@ -2,6 +2,7 @@
 import BookingFormDialog from '@/components/feature/booking-form-dialog';
 import SelectMasterDialog from '@/components/feature/select-master-dialog';
 import SlotsList from '@/components/feature/slots-list';
+import SkeletonLoader from '@/components/ui/skeleton-loader';
 import { H2 } from '@/components/ui/typography';
 import { useBooking } from '@/hooks/use-booking';
 import { useParams, useRouter } from 'next/navigation';
@@ -16,7 +17,7 @@ export default function MasterTimeSelectPage() {
         useBooking();
 
     useEffect(() => {
-        //Invalid serviceId 
+        //Invalid serviceId
         if (!serviceIdNumber) {
             router.push('/');
         }
