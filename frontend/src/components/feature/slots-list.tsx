@@ -60,7 +60,7 @@ export default function SlotsListPage({ schedules, selectedMaster, setSelectedSl
                 </div>
             ) : selectedMaster ? (
                 <div>
-                    <p>Нет доступных записей у мастеЕра выбранного мастера.</p>
+                    <p>У выбранного мастера нет доступных записей.</p>
                 </div>
             ) : (
                 <div>
