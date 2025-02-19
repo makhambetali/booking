@@ -3,7 +3,6 @@ import { H4 } from '../ui/typography';
 import { RadioGroup, RadioGroupItem } from '@radix-ui/react-radio-group';
 import { Label } from '@radix-ui/react-label';
 import { ISlot, SetNumberStateType } from '@/lib/type/types';
-import { Skeleton } from '../ui/skeleton';
 import SkeletonLoader from '../ui/skeleton-loader';
 
 interface IProps {
@@ -61,7 +60,7 @@ export default function SlotsListPage({ schedules, selectedMaster, setSelectedSl
                 </div>
             ) : selectedMaster ? (
                 <div>
-                    <p>Нет доступных записей у мастера выбранного мастера.</p>
+                    <p>Нет доступных записей у мастеЕра выбранного мастера.</p>
                 </div>
             ) : (
                 <div>

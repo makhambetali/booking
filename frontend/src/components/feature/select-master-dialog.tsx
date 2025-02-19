@@ -9,6 +9,7 @@ import {
 import { Button } from '../ui/button';
 import SelectMasterList from '../ui/select-master-list';
 import { IMaster, SetNumberStateType } from '@/lib/type/types';
+import { useEffect, useState } from 'react';
 
 interface IProps {
     barbers: IMaster[];
@@ -18,9 +19,17 @@ interface IProps {
 
 //Responsible for rendering and selecting masters
 export default function SelectMasterDialog({ barbers, selectedMaster, setSelectedMaster }: IProps) {
+    const [open, setOpen] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (selectedMaster) {
+            setOpen(false);
+        }
+    }, [selectedMaster]);
+
     return (
         <div>
-            <Dialog>
+            <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                     <Button variant="outline">Выберите мастера</Button>
                 </DialogTrigger>

@@ -10,7 +10,7 @@ interface IProps {
 export default function SelectMasterList({ masters, setMasterId, selectedMaster }: IProps) {
     return (
         <div className="flex flex-col gap-3 sm:gap-3">
-            {masters.map((master: IMaster) => (
+            {masters?.map((master: IMaster) => (
                 //close on select
                 <MasterCard
                     name={master.name}
